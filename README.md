@@ -1,19 +1,16 @@
-# 100-Days-Of-Web-Development
-🚀 100 Days of Web Development challenge using HTML, CSS &amp; JavaScript. Daily learning, practice, and real-world projects to strengthen frontend development skills.
 # 🚀 100 Days of Web Development
+🚀 100 Days of Web Development challenge using HTML, CSS &amp; JavaScript. Daily learning, practice, and real-world projects to strengthen frontend development skills.
 
 ![HTML](https://img.shields.io/badge/HTML5-orange?style=for-the-badge&logo=html5)
 ![CSS](https://img.shields.io/badge/CSS3-blue?style=for-the-badge&logo=css3)
 ![JavaScript](https://img.shields.io/badge/JavaScript-yellow?style=for-the-badge&logo=javascript)
 ![GitHub Repo Size](https://img.shields.io/github/repo-size/Shubham-cyber-prog/100-Days-Of-Web-Development?style=for-the-badge)
 ![GitHub Stars](https://img.shields.io/github/stars/Shubham-cyber-prog/100-Days-Of-Web-Development?style=for-the-badge)
-https://discord.gg/SW7puwEm
+🔗 **Join our Discord:** https://discord.gg/SW7puwEm
 ---
 
 ## 📌 About This Repository
-
 This repository documents my **100 Days of Web Development Challenge**, where I consistently learn, practice, and build projects using **HTML, CSS, and JavaScript**.
-
 The goal is to strengthen **frontend fundamentals**, improve **problem-solving**, and build **real-world projects** while maintaining daily GitHub consistency.
 
 ---
@@ -30,6 +27,7 @@ The goal is to strengthen **frontend fundamentals**, improve **problem-solving**
 
 ## 📂 Repository Structure
 ```
+> Each folder represents daily projects organized by difficulty level.
 100-days-web-projects/
 │
 ├── 📁 README.md                           # Main project overview
