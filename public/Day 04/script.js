@@ -1,3 +1,5 @@
+const forecast = document.getElementById("forecast");
+
 const cityInput = document.getElementById("cityInput");
 const searchBtn = document.getElementById("searchBtn");
 const loader = document.getElementById("loader");
@@ -14,6 +16,41 @@ const feelsLike = document.getElementById("feelsLike");
 const uvIndex = document.getElementById("uvIndex");
 const visibility = document.getElementById("visibility");
 const weatherIcon = document.getElementById("weatherIcon");
+
+// 7 days Forecast function js 
+function renderForecast(daily) {
+  forecast.innerHTML = "";
+  forecast.classList.remove("hidden");
+
+  const icons = {
+    0: "fa-sun",
+    1: "fa-cloud-sun",
+    2: "fa-cloud-sun",
+    3: "fa-cloud",
+    61: "fa-cloud-rain",
+    95: "fa-bolt"
+  };
+
+  daily.time.forEach((day, i) => {
+    const date = new Date(day);
+    const name = date.toLocaleDateString("en-US", { weekday: "short" });
+
+    const icon = icons[daily.weathercode[i]] || "fa-cloud";
+
+    forecast.innerHTML += `
+      <div class="forecast-card">
+        <div>${name}</div>
+        <i class="fas ${icon}"></i>
+        <div class="temp">
+          ${Math.round(daily.temperature_2m_max[i])}°
+        </div>
+        <div style="opacity:.7">
+          ${Math.round(daily.temperature_2m_min[i])}°
+        </div>
+      </div>
+    `;
+  });
+}
 
 searchBtn.onclick = () => {
   if (cityInput.value.trim()) fetchCity(cityInput.value.trim());
@@ -41,7 +78,7 @@ async function fetchCity(city) {
 
 async function fetchWeather(lat, lon, name, country) {
   const data = await fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m,apparent_temperature,uv_index,visibility`
+    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m,apparent_temperature,uv_index,visibility&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto`
   ).then(r => r.json());
 
   cityName.textContent = `${name}, ${country}`;
@@ -69,6 +106,7 @@ async function fetchWeather(lat, lon, name, country) {
 
   loader.style.display = "none";
   weatherData.classList.remove("hidden");
+  renderForecast(data.daily);
 }
 
 function showLoader() {
