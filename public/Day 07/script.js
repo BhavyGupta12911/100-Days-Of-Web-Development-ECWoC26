@@ -5,70 +5,50 @@ const form = document.getElementById("expense-form");
 const nameInput = document.getElementById("expense-name");
 const amountInput = document.getElementById("expense-amount");
 const categorySelect = document.getElementById("expense-category");
+const dateInput = document.getElementById("expense-date");
+const editIdInput = document.getElementById("edit-id");
 const expensesContainer = document.getElementById("expenses-container");
 const totalAmountEl = document.getElementById("total-amount");
-const editIdInput = document.getElementById("edit-id");
 
-// Save to localStorage
+// =======================
+// Load Expenses from Storage
+// =======================
+function loadExpenses() {
+  if (expenses.length) {
+    renderExpenses();
+    updateTotal();
+  }
+}
+
+// =======================
+// Save Expenses to Storage
+// =======================
 function saveExpenses() {
   localStorage.setItem("expenses", JSON.stringify(expenses));
 }
 
-// Render Expenses
-function renderExpenses() {
-  expensesContainer.innerHTML = "";
-
-  if (expenses.length === 0) {
-    expensesContainer.innerHTML =
-      '<div class="empty-state">No expenses yet. Add your first expense above!</div>';
-    return;
-  }
-
-  expenses.forEach(exp => {
-    const div = document.createElement("div");
-    div.className = "expense-card";
-
-    div.innerHTML = `
-      <div class="expense-left">
-        <strong>${exp.name}</strong>
-        <span class="category ${exp.category}">${exp.category}</span>
-      </div>
-      <div class="amount">$${exp.amount.toFixed(2)}</div>
-      <div>
-        <button class="edit-btn" onclick="editExpense(${exp.id})">Edit</button>
-        <button class="delete-btn" onclick="deleteExpense(${exp.id})">Delete</button>
-      </div>
-    `;
-
-    expensesContainer.appendChild(div);
-  });
-}
-
-// Update Total
-function updateTotal() {
-  const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-  totalAmountEl.textContent = `$${total.toFixed(2)}`;
-}
-
+// =======================
 // Add or Update Expense
-function handleExpense(name, amount, category) {
+// =======================
+function handleExpense(name, amount, category, date) {
   const editId = editIdInput.value;
 
   if (editId) {
-    // EDIT
+    // EDIT existing expense
     expenses = expenses.map(exp =>
       exp.id === Number(editId)
-        ? { ...exp, name, amount: Number(amount), category }
+        ? { ...exp, name, amount: Number(amount), category, date }
         : exp
     );
     editIdInput.value = "";
   } else {
-    // ADD
+    // ADD new expense
     expenses.push({
       id: Date.now(),
       name,
       amount: Number(amount),
-      category
+      category,
+      date: date || new Date().toISOString().split('T')[0] // default today
     });
   }
 
@@ -77,7 +57,9 @@ function handleExpense(name, amount, category) {
   updateTotal();
 }
 
+// =======================
 // Delete Expense
+// =======================
 function deleteExpense(id) {
   expenses = expenses.filter(exp => exp.id !== id);
   saveExpenses();
@@ -93,32 +75,85 @@ function editExpense(id) {
   nameInput.value = expense.name;
   amountInput.value = expense.amount;
   categorySelect.value = expense.category;
+  dateInput.value = expense.date;
   editIdInput.value = expense.id;
 }
 
-// Validate
-function validate(name, amount) {
-  if (!name.trim() || amount <= 0) {
-    alert("Please enter valid expense details.");
-    return false;
+// Render Expenses
+function renderExpenses() {
+  expensesContainer.innerHTML = "";
+
+  if (expenses.length === 0) {
+    expensesContainer.innerHTML = `<p class="empty">No expenses added yet.</p>`;
+    return;
   }
-  return true;
+
+  // Sort by date descending
+  expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  expenses.forEach(exp => {
+    const div = document.createElement("div");
+    div.className = "expense-card";
+    div.innerHTML = `
+      <div class="expense-left">
+        <strong>${exp.name}</strong>
+        <span class="category ${exp.category}">${exp.category}</span>
+        <span class="expense-date">${new Date(exp.date).toLocaleDateString()}</span>
+      </div>
+      <div class="amount">₹${exp.amount.toFixed(2)}</div>
+      <div class="expense-actions">
+        <button class="edit-btn" onclick="editExpense(${exp.id})">Edit</button>
+        <button class="delete-btn" onclick="deleteExpense(${exp.id})">Delete</button>
+      </div>
+    `;
+    expensesContainer.appendChild(div);
+  });
 }
 
-// Submit Event
+// =======================
+// Update Total
+// =======================
+function updateTotal() {
+  const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+  totalAmountEl.textContent = `₹${total.toFixed(2)}`;
+}
+
+// =======================
+// Validate Form Input
+// =======================
+function validate(name, amount) {
+  let valid = true;
+  nameInput.classList.remove("error");
+  amountInput.classList.remove("error");
+
+  if (!name.trim()) {
+    nameInput.classList.add("error");
+    valid = false;
+  }
+
+  if (!amount || amount <= 0) {
+    amountInput.classList.add("error");
+    valid = false;
+  }
+
+  return valid;
+}
+
+// Form Submit Handler
 form.addEventListener("submit", e => {
   e.preventDefault();
 
   const name = nameInput.value.trim();
   const amount = Number(amountInput.value);
   const category = categorySelect.value;
+  const date = dateInput.value || new Date().toISOString().split('T')[0]; // fallback to today
 
   if (!validate(name, amount)) return;
 
-  handleExpense(name, amount, category);
+  handleExpense(name, amount, category, date);
+
   form.reset();
 });
 
-// Init
-renderExpenses();
-updateTotal();
+// Initialize App
+loadExpenses();
