@@ -210,6 +210,29 @@ form.addEventListener("submit", e => {
   form.reset();
 });
 
+// =======================
+// Dark Mode Toggle
+// =======================
+const themeToggleBtn = document.getElementById("theme-toggle-btn");
+
+// Load saved theme
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+  themeToggleBtn.textContent = "☀ Light Mode";
+}
+
+themeToggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    localStorage.setItem("theme", "dark");
+    themeToggleBtn.textContent = "☀ Light Mode";
+  } else {
+    localStorage.setItem("theme", "light");
+    themeToggleBtn.textContent = "🌙 Dark Mode";
+  }
+});
+
 
 // =======================
 // Initialize App
