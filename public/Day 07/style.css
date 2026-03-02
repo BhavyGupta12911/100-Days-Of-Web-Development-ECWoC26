@@ -218,3 +218,22 @@ input:focus, select:focus {
     gap: 8px;
   }
 }
+
+.summary-box {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f4f6ff;
+  border-radius: 10px;
+}
+
+.summary-box h2 {
+  margin-bottom: 10px;
+  color: #667eea;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
